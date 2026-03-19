@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="theme-color" content="#2563eb">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANTI BONCOS - Hitung Dulu Baru Jual</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-slate-50: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-slate-50);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+.dark-mode {
+background:#0f172a;
+color:#e2e8f0;
+}
+
+.dark-mode .card {
+background:#1e293b;
+border:1px solid #334155;
+}
+
+.dark-mode input {
+background:#0f172a;
+color:white;
+border:1px solid #334155;
+}
+
+.dark-mode .summary-card {
+background:#1e293b;
+}
+
+.dark-mode .summary-header {
+background:#1e293b;
+}
+
+.dark-mode header {
+background:#020617;
+}
+        /* --- Header --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .title-group h1 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: -0.025em;
+            text-transform: uppercase;
+        }
+
+        .title-group p {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* --- Tabs --- */
+        .tabs-nav {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .tabs-container {
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 16px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- Layout --- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            main { grid-template-columns: 400px 1fr; }
+        }
+
+        /* --- Sidebar & Inputs --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 6px;
+            background: var(--primary);
+        }
+
+        .input-group { margin-bottom: 1rem; }
+        
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 12px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--primary); ring: 2px var(--primary); }
+        .has-prefix { padding-left: 35px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* --- Slider --- */
+        .slider-box {
+            background: var(--bg-slate-50);
+            padding: 15px;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* --- Buttons --- */
+        .btn-primary {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.1s;
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* --- Results Grid --- */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .res-card {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .res-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .res-value { font-size: 1.25rem; font-weight: 900; }
+
+        /* --- Charts & Performance --- */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-row { grid-template-columns: 1fr 1fr; }
+        }
+
+        .chart-container {
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .perf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-slate-50);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* --- Summary --- */
+.summary-card {
+    margin-top: 24px;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.summary-header {
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.summary-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 20px;
+    gap: 15px;
+}
+
+.summary-box {
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.dark-box { background: #0f172a; color: white; }
+.light-box { background: var(--bg-slate-50); border: 2px dashed var(--border); }
+
+.hidden { display: none; }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+
+/* --- EXPORT BUTTON --- */
+.export-btn{
+display:flex;
+align-items:center;
+gap:6px;
+padding:8px 14px;
+font-size:12px;
+width:auto;
+}
+
+/* --- DARK MODE TOGGLE --- */
+.theme-toggle{
+width:42px;
+height:42px;
+border-radius:50%;
+border:none;
+background:#f1f5f9;
+font-size:18px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+transition:all .2s ease;
+}
+
+.theme-toggle:hover{
+transform:scale(1.05);
+}
+
+.dark-mode .theme-toggle{
+background:#1e293b;
+color:#fff;
+}
+
+/* SPLASH SCREEN */
+
+#splash-screen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#2563eb,#1e3a8a);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+color:white;
+}
+
+.splash-container{
+text-align:center;
+width:250px;
+}
+
+.boat-animation{
+position:relative;
+height:60px;
+margin-bottom:20px;
+}
+
+.boat{
+font-size:40px;
+animation:rowBoat 2s linear infinite;
+}
+
+.wave{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:8px;
+background:rgba(255,255,255,0.3);
+border-radius:10px;
+}
+
+@keyframes rowBoat{
+0%{transform:translateX(-20px)}
+50%{transform:translateX(20px)}
+100%{transform:translateX(-20px)}
+}
+
+/* OVERRIDE BACKGROUND SPLASH */
+#splash-screen{
+background:radial-gradient(circle at center, #2563eb, #020617);
+}
+
+/* ===== PREMIUM SPLASH ===== */
+
+.logo-loader{
+font-size:22px;
+font-weight:900;
+letter-spacing:2px;
+animation:fadeScale 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeScale{
+0%{opacity:0.5; transform:scale(0.95)}
+50%{opacity:1; transform:scale(1)}
+100%{opacity:0.5; transform:scale(0.95)}
+}
+
+/* PROGRESS BAR PREMIUM */
+.progress-bar{
+width:100%;
+height:8px;
+background:rgba(255,255,255,0.2);
+border-radius:20px;
+overflow:hidden;
+}
+
+#progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#22c55e,#38bdf8,#6366f1);
+border-radius:20px;
+box-shadow:0 0 10px rgba(255,255,255,0.6);
+transition:width .3s ease;
+}
+
+/* ===== SHIMMER EFFECT ===== */
+#progress-fill{
+position:relative;
+overflow:hidden;
+}
+
+#progress-fill::after{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,0.6),transparent);
+animation:shimmer 1.5s infinite;
+}
+
+@keyframes shimmer{
+100%{
+left:100%;
+}
+}
+
+/* TEXT ANIMASI HALUS */
+.logo-loader{
+animation:fadeScale 1.5s ease-in-out infinite, glowText 2s ease-in-out infinite;
+}
+
+@keyframes glowText{
+0%{text-shadow:0 0 5px rgba(255,255,255,0.2)}
+50%{text-shadow:0 0 20px rgba(255,255,255,0.8)}
+100%{text-shadow:0 0 5px rgba(255,255,255,0.2)}
+}
+
+/* BACKGROUND LEBIH PREMIUM */
+#splash-screen{
+background:radial-gradient(circle at center, #2563eb, #020617);
+}
+
+.progress-text{
+font-size:18px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.progress-bar{
+width:100%;
+height:6px;
+background:rgba(255,255,255,0.3);
+border-radius:10px;
+overflow:hidden;
+}
+
+#progress-fill{
+width:0%;
+height:100%;
+background:white;
+}
+
+.tooltip {
+position: relative;
+cursor: help;
+}
+
+.tooltip .tooltip-text {
+visibility: hidden;
+opacity: 0;
+position: absolute;
+background: #0f172a;
+color: #fff;
+padding: 8px 10px;
+border-radius: 8px;
+font-size: 12px;
+width: 200px;
+top: -6px;
+left: 24px;
+transition: opacity 0.2s ease;
+z-index: 20;
+}
+
+.tooltip {
+position: relative;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+}
+
+@media (max-width:768px){
+
+.tooltip .tooltip-text{
+width:160px;
+left:20px;
+font-size:11px;
+}
+
+}
+
+.tooltip:hover .tooltip-text {
+visibility: visible;
+opacity: 1;
+}
+
+.info-icon{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:18px;
+height:18px;
+font-size:12px;
+margin-left:6px;
+border-radius:50%;
+background:#e5e7eb;
+color:#374151;
+font-weight:700;
+cursor:pointer;
+}
+
+.tooltip-active .tooltip-text{
+visibility: visible;
+opacity: 1;
+}
+
+/* ===== DARK MODE FIX FINAL ===== */
+
+/* CARD RESULT */
+.dark-mode .res-card{
+background:#1e293b;
+border:1px solid #334155;
+}
+
+/* TEXT LABEL */
+.dark-mode .res-label{
+color:#94a3b8;
+}
+
+/* TEXT VALUE */
+.dark-mode .res-value{
+color:#f1f5f9;
+}
+
+/* PERFORMANCE BOX */
+.dark-mode .perf-item{
+background:#0f172a;
+color:#e2e8f0;
+}
+
+/* ROAS BOX */
+.dark-mode #roas-status-box{
+background:#020617 !important;
+color:#e2e8f0 !important;
+}
+
+/* SUMMARY */
+.dark-mode .summary-card{
+background:#1e293b;
+}
+
+.dark-mode .summary-header{
+background:#020617;
+color:#e2e8f0;
+}
+
+.dark-mode .light-box{
+background:#0f172a;
+border:1px solid #334155;
+color:#e2e8f0;
+}
+
+/* INSIGHT BOX */
+.dark-mode #insightBox,
+.dark-mode #roasInsightBox{
+background:#1e293b;
+border:1px solid #334155;
+}
+
+.dark-mode #insightText,
+.dark-mode #roasInsightText{
+color:#e2e8f0;
+}
+
+.dark-mode #profitInsightExtra,
+.dark-mode #roasInsightExtra{
+background:#0f172a;
+color:#93c5fd;
+}
+
+/* TOOLTIP */
+.dark-mode .tooltip-text{
+background:#020617;
+color:#e2e8f0;
+}
+
+</style>
+</head>
+<body>
+    <script>
+const callbackName = "authCheck";
+
+window[callbackName] = function(res){
+
+if(res.status !== "success"){
+alert("Akses dicabut / email tidak aktif");
+localStorage.clear();
+window.location.href = "/";
+return;
+}
+
+// ===== STEP 3 TAMBAHKAN INI =====
+localStorage.setItem("lastCheck", Date.now());
+
+};
+
+<script>
+(function(){
+
+const email = localStorage.getItem("email");
+const device = localStorage.getItem("deviceId");
+
+// ===== STEP 1 TARUH DI SINI =====
+const lastCheck = localStorage.getItem("lastCheck");
+const now = Date.now();
+
+// 3 hari = 259200000
+const isValid = lastCheck && (now - lastCheck < 259200000);
+
+// ===============================
+
+if(!email || !device){
+window.location.href = "/";
+return;
+}
+
+const callbackName = "authCheck";
+
+window[callbackName] = function(res){
+
+if(res.status !== "success"){
+alert("Akses dicabut / email tidak aktif");
+localStorage.clear();
+window.location.href = "/";
+return; // WAJIB
+}
+
+// simpan waktu validasi
+localStorage.setItem("lastCheck", Date.now());
+
+};
+
+// ===== STEP 2: CEK PERLU VALIDASI ATAU TIDAK =====
+if(isValid){
+console.log("Auto login (skip cek)");
+
+// langsung trigger success manual
+window[callbackName]({status:"success"});
+
+}else{
+console.log("Cek ke Google Sheet");
+
+const script = document.createElement("script");
+script.src = "https://script.google.com/macros/s/AKfycbwcKhxYlvkLEkG1HOexQOl3rX7p5Ts31__wudsI7amqZ2-s5dp27Z3-zi-UZX965bg6/exec?mode=check"
++ "&email=" + encodeURIComponent(email)
++ "&device=" + device
++ "&callback=" + callbackName;
+
+document.body.appendChild(script);
+}
+})();
+</script>
+
+<div id="splash-screen">
+
+<div class="splash-container">
+
+<div class="boat-animation">
+
+<div class="logo-loader">
+ANTI-BONCOS
+</div>
+
+</div>
+
+<div class="progress-text">
+<span id="progress-number">0</span>%
+</div>
+
+<div id="loading-status" style="margin-top:10px;font-size:13px;opacity:0.8;">
+Menyiapkan sistem...
+</div>
+
+<div class="progress-bar">
+<div id="progress-fill"></div>
+</div>
+
+</div>
+
+</div>
+<header>
+
+<div class="header-container">
+
+<div class="logo-area">
+
+<div class="logo-box">
+
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+<rect x="3" y="2" width="18" height="20" rx="4" fill="#2563eb"/>
+<rect x="7" y="6" width="10" height="3" rx="1" fill="white"/>
+<circle cx="8" cy="12" r="1.2" fill="white"/>
+<circle cx="12" cy="12" r="1.2" fill="white"/>
+<circle cx="16" cy="12" r="1.2" fill="white"/>
+<circle cx="8" cy="16" r="1.2" fill="white"/>
+<circle cx="12" cy="16" r="1.2" fill="white"/>
+<circle cx="16" cy="16" r="1.2" fill="white"/>
+<text x="12" y="20" text-anchor="middle" font-size="6" fill="#22c55e">$</text>
+</svg>
+
+</div>
+
+<div class="title-group">
+<h1>ANTI BONCOS</h1>
+<p>Hitung Dulu Baru Jual</p>
+</div>
+
+</div>
+
+<div style="display:flex;align-items:center;gap:10px;">
+
+<button class="btn-primary export-btn" onclick="exportCSV()">
+â¬‡ Unduh
+</button>
+
+<button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">
+ðŸŒ™
+</button>
+
+</div>
+
+</div>
+
+</header>
+    <div class="tabs-nav">
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('profit')">Hitung Profit</button>
+            <button class="tab-btn" onclick="switchTab('roas')">Hitung ROAS</button>
+        </div>
+    </div>
+
+    <main>
+        <section class="sidebar card">
+<h2 style="font-size:0.9rem;font-weight:900;margin-bottom:20px;">
+ðŸ“¦ DATA PRODUK
+</h2>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>SKU</label>
+                    <input type="text" id="sku" value="SKU-001">
+                </div>
+                <div class="input-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="namaProduk" value="Produk Contoh">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>HPP / Modal</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">Rp</span>
+                        <input type="number" id="hargaModal" class="has-prefix" value="50000">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Harga Jual</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">Rp</span>
+                        <input type="number" id="hargaJualAwal" class="has-prefix" value="100000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>Admin Produk (%)</label>
+                    <input type="number" id="adminMarketplace" value="6">
+                </div>
+                <div class="input-group">
+                    <label>Admin Promo (%)</label>
+                    <input type="number" id="freeOngkir" value="4">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>Biaya Packing (Rp)</label>
+                    <input type="number" id="packing" value="2000">
+                </div>
+                <div class="input-group">
+                    <label>Biaya Per-Order (Rp)</label>
+                    <input type="number" id="biayaLain" value="0">
+                </div>
+            </div>
+
+            <div id="profit-inputs">
+                <div class="slider-box">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <label>Simulasi Harga</label>
+                        <span id="slider-val" style="font-weight: 900; color: var(--success);">0%</span>
+                    </div>
+                    <input type="range" id="sliderPersen" min="-50" max="50" value="0">
+                    <p id="simulasi-price" style="text-align: center; font-weight: 900; color: var(--primary); margin-top: 10px;">Rp 100.000</p>
+                </div>
+<h2 style="font-size:0.9rem;font-weight:900;margin-bottom:15px;border-top:1px solid #eee;padding-top:15px;">
+ðŸ“ˆ PERFORMA IKLAN
+</h2>            
+<div class="input-group">
+                    <label>Jumlah Biaya Iklan</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">Rp</span>
+                        <input type="number" id="totalBiayaIklan" class="has-prefix" value="0">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Jumlah Klik</label>
+                        <input type="number" id="jumlahKlik" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Total Pesanan</label>
+                        <input type="number" id="jumlahPesanan" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div id="roas-inputs" class="hidden">
+                <div class="input-group">
+                    <label>Target Margin Bersih Setelah Iklan(Rp)</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">Rp</span>
+                        <input type="number" id="targetMarginRp" class="has-prefix" value="15000">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="calculate()">HITUNG HASIL</button>
+        </section>
+
+        <section id="results-view">
+
+<!-- VIEW PROFIT -->
+<div id="view-profit">
+
+<div class="results-grid">
+    <div class="res-card">
+        <div class="res-label tooltip">
+Margin Kotor
+<span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Selisih antara harga jual dengan modal produk sebelum biaya lain-lain.
+</span>
+</div>
+        <div class="res-value" id="res-margin-kotor">Rp 0</div>
+    </div>
+
+    <div class="res-card">
+       <div class="res-label tooltip">
+Margin Bersih (Pre-Ads) <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Keuntungan produk setelah dikurangi biaya admin, promo, packing, dan biaya lain sebelum iklan.
+</span>
+</div>
+        <div class="res-value" id="res-margin-bersih" style="color: var(--primary)">Rp 0</div>
+    </div>
+
+    <div class="res-card">
+        <div class="res-label tooltip">
+ROAS Impas <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+ROAS minimum agar iklan tidak rugi. Jika ROAS di bawah angka ini maka iklan merugi.
+</span>
+</div>
+        <div class="res-value" id="res-roas-impas" style="color: var(--warning)">0.00x</div>
+    </div>
+
+    <div class="res-card">
+        <div class="res-label tooltip">
+Profit per-Order <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Keuntungan bersih yang diperoleh dari setiap pesanan setelah semua biaya termasuk iklan.
+</span>
+</div>
+        <div class="res-value" id="res-final-profit">Rp 0</div>
+    </div>
+</div>
+
+<div class="dashboard-row">
+
+<div class="card">
+<div class="res-label" style="margin-bottom: 20px;">Distribusi Biaya</div>
+
+<div class="chart-container">
+<svg width="180" height="180" viewBox="0 0 42 42" id="pie-chart">
+
+<circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#e2e8f0" stroke-width="5"></circle>
+
+<text
+id="chart-center-value"
+x="21"
+y="20"
+text-anchor="middle"
+font-size="4"
+font-weight="bold"
+fill="#0f172a">
+0%
+</text>
+
+<text
+id="chart-center-label"
+x="21"
+y="25"
+text-anchor="middle"
+font-size="2"
+fill="#64748b">
+UNTUNG
+</text>
+
+</svg>
+</div>
+
+<div id="chart-legend" style="font-size: 10px; margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
+
+</div>
+
+<div class="card">
+
+<div class="res-label" style="margin-bottom: 20px;">Performa Iklan</div>
+
+<div class="perf-item">
+<span class="tooltip">
+CPC (Biaya per-Klik) <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Biaya rata-rata yang dibayar setiap kali iklan mendapatkan satu klik.
+</span>
+</span>
+<span id="res-cpc" style="font-weight: 900;">Rp 0</span>
+</div>
+
+<div class="perf-item">
+<span class="tooltip">
+Konversi <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Persentase pengunjung yang akhirnya melakukan pembelian.
+</span>
+</span>
+<span id="res-cr" style="font-weight: 900;">0%</span>
+</div>
+
+<div class="perf-item">
+<span class="tooltip">
+CPA (Biaya Iklan per-Order) <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Biaya iklan yang dibutuhkan untuk menghasilkan satu pesanan.
+</span>
+</span>
+<span id="res-cpa" style="font-weight: 900;">Rp 0</span>
+</div>
+
+<div id="roas-status-box" style="padding: 15px; border-radius: 12px; margin-top: 10px; text-align: center;">
+<div class="res-label tooltip">
+ROAS AKTUAL <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+ROAS yang dihasilkan dari performa iklan saat ini. Jika di bawah ROAS impas maka iklan merugi.
+</span>
+</div>
+<div id="res-roas-aktual" style="font-size: 1.5rem; font-weight: 900;">0.00x</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="summary-card">
+
+<div class="summary-header">Ringkasan Profit</div>
+
+<div class="summary-body">
+
+<div class="summary-box light-box">
+<div class="res-label">Profit per-Order</div>
+<div class="res-value" id="sum-profit-order">Rp 0</div>
+</div>
+
+<div class="summary-box dark-box">
+<div class="res-label tooltip">
+Total Profit <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Total keuntungan bersih dari seluruh pesanan setelah semua biaya.
+</span>
+</div>
+<div class="res-value" id="sum-profit-total">Rp 0</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- KESIMPULAN HITUNG PROFIT -->
+
+<div id="insightBox" style="
+margin-top:20px;
+background:#f8fafc;
+border-radius:12px;
+padding:20px;
+border:1px solid #e2e8f0;
+">
+
+<h3 style="display:flex;align-items:center;gap:6px;">
+<i data-lucide="lightbulb"></i>
+Kesimpulan Hitung Profit
+</h3>
+
+<div id="insightText" style="
+margin-top:10px;
+font-size:14px;
+line-height:1.6;
+color:#334155;
+"></div>
+<div id="profitInsightExtra" style="
+margin-top:15px;
+padding:15px;
+background:#eef6ff;
+border-radius:10px;
+font-size:13px;
+line-height:1.6;
+color:#1e3a8a;
+">
+<b style="display:flex;align-items:center;gap:6px;">
+<i data-lucide="bar-chart-3"></i>
+Insight (Opsional)
+</b>
+<div id="profitInsightExtraText">
+Analisis tambahan akan muncul di sini.
+</div>
+</div>
+</div>
+
+</div>
+
+
+
+<!-- VIEW ROAS -->
+
+<div id="view-roas" class="hidden">
+
+<div class="card" style="margin-bottom: 20px;">
+
+<h3 class="res-label tooltip" style="color: var(--warning)">
+Target ROAS Impas <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+ROAS minimal agar bisnis tidak rugi. Jika ROAS iklan di bawah angka ini maka iklan merugi.
+</span>
+</h3>
+
+<div class="grid-2">
+
+<div>
+<div class="res-label tooltip">
+Max Biaya / Order <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Biaya iklan maksimal yang boleh dikeluarkan untuk mendapatkan 1 order agar tidak melebihi margin produk.
+</span>
+</div>
+<div class="res-value" id="target-max-bep">Rp 0</div>
+</div>
+
+<div>
+<div class="res-label tooltip">
+ROAS Impas <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Perbandingan omzet dengan biaya iklan agar tidak rugi. Misalnya ROAS 3x berarti Rp1 iklan menghasilkan Rp3 omzet.
+</span>
+</div>
+<div class="res-value text-success" id="target-roas-bep">0.00x</div>
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h3 class="res-label tooltip" style="color: var(--primary)">
+Target Performa <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Performa iklan yang harus dicapai agar target margin bersih setelah iklan tetap tercapai.
+</span>
+</h3>
+
+<div class="grid-2">
+
+<div>
+<div class="res-label tooltip">
+Max Biaya / Order <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+Batas biaya iklan maksimal untuk mendapatkan 1 order berdasarkan target profit yang diinginkan.
+</span>
+</div>
+<div class="res-value" id="target-budget-cpa">Rp 0</div>
+</div>
+
+<div>
+<div class="res-label tooltip">
+Min ROAS Target <span class="info-icon">?</span>
+
+<span class="tooltip-text">
+ROAS minimal yang harus dicapai agar target margin bersih setelah iklan tetap tercapai.
+</span>
+</div>
+<div class="res-value text-success" id="target-roas-final">0.00x</div>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- KESIMPULAN TARGET ROAS -->
+
+<div id="roasInsightBox" style="
+margin-top:20px;
+background:#f8fafc;
+border-radius:12px;
+padding:20px;
+border:1px solid #e2e8f0;
+">
+
+<h3 style="display:flex;align-items:center;gap:6px;">
+<i data-lucide="lightbulb"></i>
+Kesimpulan Target ROAS
+</h3>
+
+<div id="roasInsightText" style="
+margin-top:10px;
+font-size:14px;
+line-height:1.6;
+color:#334155;
+">
+Klik tombol hitung hasil untuk melihat analisis target ROAS.
+</div>
+<div id="roasInsightExtra" style="
+margin-top:15px;
+padding:15px;
+background:#eef6ff;
+border-radius:10px;
+font-size:13px;
+line-height:1.6;
+color:#1e3a8a;
+">
+<b style="display:flex;align-items:center;gap:6px;">
+<i data-lucide="bar-chart-3"></i>
+Insight (Opsional)
+</b>
+<div id="roasInsightExtraText">
+Analisis tambahan akan muncul di sini.
+</div>
+</div>
+</div>
+</div>
+</section>
+       
+        </main>
+    <script>
+
+        let currentTab = 'profit';
+
+        // Utility: Format IDR
+        function formatIDR(val) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+            }).format(val);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (tab === 'profit') {
+                document.getElementById('profit-inputs').classList.remove('hidden');
+                document.getElementById('roas-inputs').classList.add('hidden');
+                document.getElementById('view-profit').classList.remove('hidden');
+                document.getElementById('view-roas').classList.add('hidden');
+            } else {
+                document.getElementById('profit-inputs').classList.add('hidden');
+                document.getElementById('roas-inputs').classList.remove('hidden');
+                document.getElementById('view-profit').classList.add('hidden');
+                document.getElementById('view-roas').classList.remove('hidden');
+            }
+            calculate();
+        }
+
+        function calculate() {
+            // Get Inputs
+            const modal = parseFloat(document.getElementById('hargaModal').value) || 0;
+            const hargaAwal = parseFloat(document.getElementById('hargaJualAwal').value) || 0;
+            const admin = parseFloat(document.getElementById('adminMarketplace').value) || 0;
+            const promo = parseFloat(document.getElementById('freeOngkir').value) || 0;
+            const packing = parseFloat(document.getElementById('packing').value) || 0;
+            const lain = parseFloat(document.getElementById('biayaLain').value) || 0;
+            const slider = parseFloat(document.getElementById('sliderPersen').value) || 0;
+            
+            const totalIklan = parseFloat(document.getElementById('totalBiayaIklan').value) || 0;
+            const klik = parseFloat(document.getElementById('jumlahKlik').value) || 0;
+            const order = parseFloat(document.getElementById('jumlahPesanan').value) || 0;
+            const targetLaba = parseFloat(document.getElementById('targetMarginRp').value) || 0;
+
+            // Calculations
+            const hargaSimulasi = hargaAwal * (1 + slider / 100);
+            const biayaAdmin = hargaSimulasi * (admin / 100);
+            const biayaPromo = hargaSimulasi * (promo / 100);
+            const totalBiayaTetap = modal + biayaAdmin + biayaPromo + packing + lain;
+            
+            const marginKotor = hargaSimulasi - modal;
+            const marginBersihAwal = hargaSimulasi - totalBiayaTetap;
+            
+            const cpc = klik > 0 ? totalIklan / klik : 0;
+            const cr = klik > 0 ? (order / klik) * 100 : 0;
+            const cpa = order > 0 ? totalIklan / order : 0;
+            const roasAktual = totalIklan > 0 ? (hargaSimulasi * order) / totalIklan : 0;
+            
+            const profitPerOrder = marginBersihAwal - cpa;
+            const totalProfit = profitPerOrder * order;
+            const roasBEP = marginBersihAwal > 0 ? hargaSimulasi / marginBersihAwal : 0;
+
+            // Target Calculations
+            const maxIklanTarget = marginBersihAwal - targetLaba;
+            const roasTarget = maxIklanTarget > 0 ? hargaSimulasi / maxIklanTarget : 0;
+
+            // Update UI - View 1
+            document.getElementById('slider-val').innerText = slider + '%';
+            document.getElementById('simulasi-price').innerText = formatIDR(hargaSimulasi);
+            document.getElementById('res-margin-kotor').innerText = formatIDR(marginKotor);
+            document.getElementById('res-margin-bersih').innerText = formatIDR(marginBersihAwal);
+            document.getElementById('res-roas-impas').innerText = roasBEP.toFixed(2) + 'x';
+            document.getElementById('res-final-profit').innerText = formatIDR(profitPerOrder);
+            document.getElementById('res-final-profit').className = 'res-value ' + (profitPerOrder >= 0 ? 'text-success' : 'text-danger');
+            
+            document.getElementById('res-cpc').innerText = formatIDR(cpc);
+            document.getElementById('res-cr').innerText = cr.toFixed(2) + '%';
+            document.getElementById('res-cpa').innerText = formatIDR(cpa);
+            document.getElementById('res-roas-aktual').innerText = roasAktual.toFixed(2) + 'x';
+            
+            const statusBox = document.getElementById('roas-status-box');
+            if(roasAktual >= roasBEP && roasAktual > 0) {
+                statusBox.style.background = '#ecfdf5';
+                statusBox.style.color = '#059669';
+            } else if (roasAktual > 0) {
+                statusBox.style.background = '#fef2f2';
+                statusBox.style.color = '#dc2626';
+            } else {
+                statusBox.style.background = '#f8fafc';
+                statusBox.style.color = '#64748b';
+            }
+
+            document.getElementById('sum-profit-order').innerText = formatIDR(profitPerOrder);
+            document.getElementById('sum-profit-total').innerText = formatIDR(totalProfit);
+            document.getElementById('sum-profit-order').className = 'res-value ' + (profitPerOrder >= 0 ? 'text-success' : 'text-danger');
+
+            // Update UI - View 2
+document.getElementById('target-max-bep').innerText = formatIDR(marginBersihAwal);
+document.getElementById('target-roas-bep').innerText = roasBEP.toFixed(2) + 'x';
+document.getElementById('target-budget-cpa').innerText = formatIDR(Math.max(0, maxIklanTarget));
+document.getElementById('target-roas-final').innerText = (maxIklanTarget > 0 ? roasTarget.toFixed(2) : 'N/A') + 'x';
+
+updateChart(modal, biayaAdmin, biayaPromo, packing, Math.max(0, cpa), Math.max(0, profitPerOrder));
+
+generateInsight(profitPerOrder, roasAktual, roasBEP, cr, cpa, marginBersihAwal);
+
+if(currentTab === "roas"){
+generateRoasInsight(roasBEP, roasTarget, maxIklanTarget);
+}
+        }
+
+        function updateChart(modal, admin, promo, pack, ads, profit) {
+
+const data = [
+{ label: 'Modal', val: modal, color: '#94a3b8' },
+{ label: 'Admin', val: admin, color: '#f87171' },
+{ label: 'Promo', val: promo, color: '#fb923c' },
+{ label: 'Pack', val: pack, color: '#fbbf24' },
+{ label: 'Iklan', val: ads, color: '#3b82f6' },
+{ label: 'Untung', val: profit, color: '#10b981' }
+];
+
+const total = data.reduce((a, b) => a + b.val, 0);
+let offset = 0;
+
+const svg = document.getElementById('pie-chart');
+const legend = document.getElementById('chart-legend');
+
+svg.innerHTML = '<circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#f1f5f9" stroke-width="5"></circle>';
+legend.innerHTML = '';
+
+data.forEach(item => {
+
+if(item.val <= 0) return;
+
+const percent = (item.val / total) * 100;
+const percentText = percent.toFixed(1);
+
+const circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+
+circle.setAttribute("cx","21");
+circle.setAttribute("cy","21");
+circle.setAttribute("r","15.915");
+circle.setAttribute("fill","transparent");
+circle.setAttribute("stroke",item.color);
+circle.setAttribute("stroke-width","5");
+circle.setAttribute("stroke-dasharray",`${percent} ${100-percent}`);
+circle.setAttribute("stroke-dashoffset",100-offset+25);
+
+svg.appendChild(circle);
+
+offset += percent;
+
+legend.innerHTML += `
+<div style="display:flex;align-items:center;gap:6px">
+<span style="display:inline-block;width:10px;height:10px;background:${item.color};border-radius:50%"></span>
+${item.label} (${percentText}%)
+</div>
+`;
+
+});
+
+}
+
+
+function generateInsight(profitPerOrder, roasAktual, roasBEP, konversi, cpa, marginBersih){
+
+// CEK DATA KOSONG
+if(
+profitPerOrder === 0 &&
+roasAktual === 0 &&
+konversi === 0 &&
+cpa === 0 &&
+marginBersih === 0
+){
+document.getElementById("insightText").innerHTML = "<i>Isi data untuk melihat analisis</i>";
+document.getElementById("profitInsightExtraText").innerHTML = "";
+return;
+}
+
+let insight = "";
+
+if(profitPerOrder > 0){
+insight += "âœ… Produk masih menghasilkan profit dari iklan.<br>";
+}else{
+insight += "âœ… Produk sedang merugi dari iklan.<br>";
+}
+
+if(roasAktual > roasBEP){
+insight += " ðŸŸ¢ ROAS iklan berada di atas titik impas.<br>";
+}else{
+insight += " â›” ROAS iklan berada di bawah titik impas.<br>";
+}
+
+if(konversi < 5){
+insight += " âš  Konversi produk masih rendah. Ideal marketplace biasanya 8% - 15%.<br>";
+}
+
+if(cpa > marginBersih){
+insight += " â›” Biaya iklan per order lebih besar dari margin produk.<br>";
+}
+
+if(marginBersih < 10000){
+insight += " âœ… Margin produk terlalu tipis untuk scale iklan marketplace.<br>";
+}else{
+insight += " âœ… Margin produk masih aman untuk menjalankan iklan.<br>";
+}
+
+document.getElementById("insightText").innerHTML = insight;
+let extraInsight = "";
+
+// Konversi rendah
+if (konversi < 5) {
+  extraInsight += "â€¢ Konversi rendah â†’ perbaiki foto produk, judul, dan perbanyak ulasan positif<br>";
+}
+
+// CPA terlalu tinggi
+if (cpa > marginBersih) {
+  extraInsight += "â€¢ Biaya iklan terlalu mahal â†’ turunkan bid atau optimasi harga produk<br>";
+}
+
+// Margin
+if (marginBersih < 10000) {
+  extraInsight += "â€¢ Margin tipis â†’ pertimbangkan naikkan harga atau tekan biaya<br>";
+} else {
+  extraInsight += "â€¢ Margin cukup aman untuk scale iklan<br>";
+}
+
+// CTR & Shopee behavior
+extraInsight += "â€¢ Di Shopee, performa iklan sangat dipengaruhi oleh foto utama & judul produk<br>";
+extraInsight += "â€¢ Gunakan gambar yang kontras, jelas, dan menarik perhatian di feed<br>";
+extraInsight += "â€¢ Optimasi judul dengan keyword yang sering dicari";
+
+// Render
+document.getElementById("profitInsightExtraText").innerHTML = extraInsight;
+}
+
+
+function exportCSV(){
+
+const sku = document.getElementById('sku').value;
+const produk = document.getElementById('namaProduk').value;
+
+const modal = parseInt(document.getElementById('hargaModal').value);
+
+const jual = parseInt(
+document.getElementById('simulasi-price')
+.innerText.replace(/[^0-9]/g,'')
+);
+
+const profit = parseInt(
+document.getElementById('sum-profit-order')
+.innerText.replace(/[^0-9]/g,'')
+);
+
+const roas = document.getElementById('res-roas-impas').innerText;
+
+const data = [
+["SKU","PRODUK","MODAL","JUAL","PROFIT","ROAS_BEP"],
+[sku,produk,modal,jual,profit,roas]
+];
+
+const ws = XLSX.utils.aoa_to_sheet(data);
+
+/* Lebar Kolom */
+ws['!cols'] = [
+{wch:15},
+{wch:25},
+{wch:15},
+{wch:15},
+{wch:15},
+{wch:12}
+];
+
+/* Auto Filter */
+ws['!autofilter'] = { ref: "A1:F1" };
+
+const wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "ANTI BONCOS");
+
+XLSX.writeFile(wb, `Anti-Boncos-${sku}.xlsx`);
+
+}
+/* ===== ROAS INSIGHT ===== */
+
+function generateRoasInsight(roasBEP, roasTarget, maxIklanTarget){
+
+let text="";
+
+// CEK DATA KOSONG
+if(roasBEP === 0 && roasTarget === 0 && maxIklanTarget === 0){
+document.getElementById("roasInsightText").innerHTML = "<i>Isi data untuk melihat analisis</i>";
+document.getElementById("roasInsightExtraText").innerHTML = "";
+return;
+}
+
+text += "â„¹ ROAS Impas: " + roasBEP.toFixed(2) + "x.<br>";
+text += "â„¹ Artinya setiap Rp1 biaya iklan harus menghasilkan Rp"+roasBEP.toFixed(2)+" omzet agar tidak rugi.<br>";
+text += "â„¹ Biaya iklan maksimal per order: Rp"+Math.round(maxIklanTarget).toLocaleString()+"<br>";
+text += "â„¹ Target ROAS: "+roasTarget.toFixed(2)+"x.<br><br>";
+
+let extraRoas = "";
+
+// Target terlalu tinggi
+if (roasTarget >= 8) {
+  extraRoas += "â€¢ Target ROAS terlalu tinggi â†’ iklan akan sulit jalan di Shopee auto ads<br>";
+} 
+else if (roasTarget >= 5) {
+  extraRoas += "â€¢ Target ROAS cukup tinggi â†’ pastikan harga & produk sangat kompetitif<br>";
+} 
+else {
+  extraRoas += "â€¢ Target ROAS realistis â†’ cocok untuk scale iklan di Shopee<br>";
+}
+
+// BEP vs realita marketplace
+if (roasBEP > 4) {
+  extraRoas += "â€¢ ROAS impas tinggi â†’ margin produk kecil atau harga kurang optimal<br>";
+}
+
+// Insight utama Shopee
+extraRoas += "â€¢ Di Shopee, sistem iklan cenderung auto â†’ performa tergantung kualitas produk<br>";
+extraRoas += "â€¢ Produk dengan harga kompetitif & banyak ulasan lebih mudah mencapai ROAS tinggi<br>";
+extraRoas += "â€¢ Fokus optimasi pada harga, rating, dan visual produk";
+
+// Render ke UI
+document.getElementById("roasInsightExtraText").innerHTML = extraRoas;
+document.getElementById("roasInsightText").innerHTML = text;
+
+}
+
+
+// Initialize
+document.querySelectorAll('input').forEach(input => {
+input.addEventListener('input', calculate);
+});
+calculate();
+/* DARK MODE TOGGLE */
+function toggleTheme(){
+
+document.body.classList.toggle("dark-mode");
+
+const btn = document.getElementById("themeToggle");
+
+if(document.body.classList.contains("dark-mode")){
+localStorage.setItem("theme","dark");
+btn.innerHTML = '<i data-lucide="moon"></i>';
+lucide.createIcons();
+}else{
+localStorage.setItem("theme","light");
+btn.innerHTML = '<i data-lucide="sun"></i>';
+lucide.createIcons();
+}
+
+}
+
+window.addEventListener("load", function(){
+
+const theme = localStorage.getItem("theme");
+
+const btn = document.getElementById("themeToggle");
+
+if(theme === "dark"){
+document.body.classList.add("dark-mode");
+btn.innerHTML = '<i data-lucide="moon"></i>';
+}else{
+btn.innerHTML = '<i data-lucide="sun"></i>';
+}
+
+lucide.createIcons();
+
+setTimeout(() => {
+lucide.createIcons();
+}, 50);
+
+});
+</script>
+
+<script>
+document.querySelectorAll(".tooltip").forEach(el => {
+
+el.addEventListener("mouseenter", function(){
+
+const rect = this.getBoundingClientRect();
+const spaceRight = window.innerWidth - rect.right;
+
+if(spaceRight < 220){
+this.classList.add("tooltip-left");
+}else{
+this.classList.remove("tooltip-left");
+}
+
+});
+
+});
+
+</script>
+
+<script>
+// TOOLTIP CLICK
+document.querySelectorAll(".tooltip").forEach(el => {
+el.addEventListener("click", function(e){
+if(window.innerWidth < 768){
+e.stopPropagation();
+this.classList.toggle("tooltip-active");
+}
+});
+});
+
+document.addEventListener("click", function(){
+document.querySelectorAll(".tooltip").forEach(el=>{
+el.classList.remove("tooltip-active");
+});
+});
+
+// ICON
+document.addEventListener("DOMContentLoaded", function(){
+setTimeout(() => {
+if(window.lucide) lucide.createIcons();
+}, 100);
+});
+</script>
+
+<script>
+// SPLASH
+window.addEventListener("load", function(){
+
+let progress = 0;
+
+const text = document.getElementById("progress-number");
+const bar = document.getElementById("progress-fill");
+
+/* TAMBAHKAN DI SINI */
+const statusText = document.getElementById("loading-status");
+
+const messages = [
+"Menyiapkan sistem...",
+"Menghitung margin...",
+"Analisa performa iklan...",
+"Optimasi profit...",
+"Hampir selesai..."
+];
+
+if(!text || !bar) return;
+
+const interval = setInterval(() => {
+
+progress += 5;
+
+const index = Math.floor(progress / 20);
+if(statusText && messages[index]){
+statusText.innerText = messages[index];
+}
+
+text.innerText = progress;
+bar.style.width = progress + "%";
+
+if(progress >= 100){
+clearInterval(interval);
+
+setTimeout(()=>{
+const splash = document.getElementById("splash-screen");
+if(splash) splash.style.display="none";
+}, 300);
+}
+
+}, 100);
+
+});
+</script>
+
+<script>
+// ===== LOGOUT =====
+function logout(){
+localStorage.clear();
+window.location.href = "/";
+}
+
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <meta http-equiv="Cache-Control" content="no-store">
     <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -788,7 +789,7 @@ Menyiapkan sistem...
 <div style="display:flex;align-items:center;gap:10px;">
 
 <button class="btn-primary export-btn" onclick="exportCSV()">
-â¬‡ Unduh
+<i class="fa-solid fa-download" style="margin-right:6px;"></i> Unduh
 </button>
 
 <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">
@@ -809,9 +810,7 @@ Menyiapkan sistem...
 
     <main>
         <section class="sidebar card">
-<h2 style="font-size:0.9rem;font-weight:900;margin-bottom:20px;">
-ðŸ“¦ DATA PRODUK
-</h2>
+<i class="fa-solid fa-box" style="margin-right:6px;"></i> DATA PRODUK
 
             <div class="grid-2">
                 <div class="input-group">
@@ -872,9 +871,7 @@ Menyiapkan sistem...
                     <input type="range" id="sliderPersen" min="-50" max="50" value="0">
                     <p id="simulasi-price" style="text-align: center; font-weight: 900; color: var(--primary); margin-top: 10px;">Rp 100.000</p>
                 </div>
-<h2 style="font-size:0.9rem;font-weight:900;margin-bottom:15px;border-top:1px solid #eee;padding-top:15px;">
-ðŸ“ˆ PERFORMA IKLAN
-</h2>            
+<i class="fa-solid fa-chart-line" style="margin-right:6px;"></i> PERFORMA IKLAN            
 <div class="input-group">
                     <label>Jumlah Biaya Iklan</label>
                     <div class="input-wrapper">
@@ -1085,10 +1082,7 @@ padding:20px;
 border:1px solid #e2e8f0;
 ">
 
-<h3 style="display:flex;align-items:center;gap:6px;">
-<i data-lucide="lightbulb"></i>
-Kesimpulan Hitung Profit
-</h3>
+<i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i> Kesimpulan Hitung Profit
 
 <div id="insightText" style="
 margin-top:10px;
@@ -1105,10 +1099,7 @@ font-size:13px;
 line-height:1.6;
 color:#1e3a8a;
 ">
-<b style="display:flex;align-items:center;gap:6px;">
-<i data-lucide="bar-chart-3"></i>
-Insight (Opsional)
-</b>
+<i class="fa-solid fa-chart-bar" style="margin-right:6px;"></i> Insight (Opsional)
 <div id="profitInsightExtraText">
 Analisis tambahan akan muncul di sini.
 </div>
@@ -1431,61 +1422,69 @@ return;
 
 let insight = "";
 
+// PROFIT
 if(profitPerOrder > 0){
-insight += "âœ… Produk masih menghasilkan profit dari iklan.<br>";
+  insight += '<i class="fa-solid fa-circle-check" style="color:#22c55e;margin-right:6px;"></i> Produk masih menghasilkan profit dari iklan.<br>';
 }else{
-insight += "âœ… Produk sedang merugi dari iklan.<br>";
+  insight += '<i class="fa-solid fa-circle-xmark" style="color:#ef4444;margin-right:6px;"></i> Produk sedang merugi dari iklan.<br>';
 }
 
+// ROAS
 if(roasAktual > roasBEP){
-insight += " ðŸŸ¢ ROAS iklan berada di atas titik impas.<br>";
+  insight += '<i class="fa-solid fa-arrow-trend-up" style="color:#22c55e;margin-right:6px;"></i> ROAS iklan berada di atas titik impas.<br>';
 }else{
-insight += " â›” ROAS iklan berada di bawah titik impas.<br>";
+  insight += '<i class="fa-solid fa-arrow-trend-down" style="color:#f59e0b;margin-right:6px;"></i> ROAS iklan berada di bawah titik impas.<br>';
 }
 
+// KONVERSI
 if(konversi < 5){
-insight += " âš  Konversi produk masih rendah. Ideal marketplace biasanya 8% - 15%.<br>";
+  insight += '<i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;margin-right:6px;"></i> Konversi produk masih rendah. Ideal marketplace biasanya 8% - 15%.<br>';
 }
 
+// CPA
 if(cpa > marginBersih){
-insight += " â›” Biaya iklan per order lebih besar dari margin produk.<br>";
+  insight += '<i class="fa-solid fa-circle-xmark" style="color:#ef4444;margin-right:6px;"></i> Biaya iklan per order lebih besar dari margin produk.<br>';
 }
 
+// MARGIN
 if(marginBersih < 10000){
-insight += " âœ… Margin produk terlalu tipis untuk scale iklan marketplace.<br>";
+  insight += '<i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;margin-right:6px;"></i> Margin produk terlalu tipis untuk scale iklan marketplace.<br>';
 }else{
-insight += " âœ… Margin produk masih aman untuk menjalankan iklan.<br>";
+  insight += '<i class="fa-solid fa-circle-check" style="color:#22c55e;margin-right:6px;"></i> Margin produk masih aman untuk menjalankan iklan.<br>';
 }
 
+// RENDER
 document.getElementById("insightText").innerHTML = insight;
+
+
+// ================= EXTRA INSIGHT =================
+
 let extraInsight = "";
 
-// Konversi rendah
+// Konversi
 if (konversi < 5) {
-  extraInsight += "â€¢ Konversi rendah â†’ perbaiki foto produk, judul, dan perbanyak ulasan positif<br>";
+  extraInsight += '<i class="fa-solid fa-chart-line" style="margin-right:6px;"></i> Konversi rendah → perbaiki foto produk, judul, dan perbanyak ulasan positif<br>';
 }
 
-// CPA terlalu tinggi
+// CPA
 if (cpa > marginBersih) {
-  extraInsight += "â€¢ Biaya iklan terlalu mahal â†’ turunkan bid atau optimasi harga produk<br>";
+  extraInsight += '<i class="fa-solid fa-money-bill-wave" style="margin-right:6px;"></i> Biaya iklan terlalu mahal → turunkan bid atau optimasi harga produk<br>';
 }
 
 // Margin
 if (marginBersih < 10000) {
-  extraInsight += "â€¢ Margin tipis â†’ pertimbangkan naikkan harga atau tekan biaya<br>";
+  extraInsight += '<i class="fa-solid fa-scale-unbalanced" style="margin-right:6px;"></i> Margin tipis → pertimbangkan naikkan harga atau tekan biaya<br>';
 } else {
-  extraInsight += "â€¢ Margin cukup aman untuk scale iklan<br>";
+  extraInsight += '<i class="fa-solid fa-rocket" style="margin-right:6px;"></i> Margin cukup aman untuk scale iklan<br>';
 }
 
-// CTR & Shopee behavior
-extraInsight += "â€¢ Di Shopee, performa iklan sangat dipengaruhi oleh foto utama & judul produk<br>";
-extraInsight += "â€¢ Gunakan gambar yang kontras, jelas, dan menarik perhatian di feed<br>";
-extraInsight += "â€¢ Optimasi judul dengan keyword yang sering dicari";
+// General
+extraInsight += '<i class="fa-solid fa-image" style="margin-right:6px;"></i> Di Shopee, performa iklan sangat dipengaruhi oleh foto utama & judul produk<br>';
+extraInsight += '<i class="fa-solid fa-eye" style="margin-right:6px;"></i> Gunakan gambar yang kontras, jelas, dan menarik perhatian di feed<br>';
+extraInsight += '<i class="fa-solid fa-key" style="margin-right:6px;"></i> Optimasi judul dengan keyword yang sering dicari';
 
-// Render
+// RENDER
 document.getElementById("profitInsightExtraText").innerHTML = extraInsight;
-}
-
 
 function exportCSV(){
 
@@ -1545,35 +1544,47 @@ document.getElementById("roasInsightExtraText").innerHTML = "";
 return;
 }
 
-text += "â„¹ ROAS Impas: " + roasBEP.toFixed(2) + "x.<br>";
-text += "â„¹ Artinya setiap Rp1 biaya iklan harus menghasilkan Rp"+roasBEP.toFixed(2)+" omzet agar tidak rugi.<br>";
-text += "â„¹ Biaya iklan maksimal per order: Rp"+Math.round(maxIklanTarget).toLocaleString()+"<br>";
-text += "â„¹ Target ROAS: "+roasTarget.toFixed(2)+"x.<br><br>";
+let text = "";
+
+// INFO UTAMA
+text += '<i class="fa-solid fa-circle-info" style="color:#3b82f6;margin-right:6px;"></i> ROAS Impas: ' + roasBEP.toFixed(2) + 'x.<br>';
+
+text += '<i class="fa-solid fa-circle-info" style="color:#3b82f6;margin-right:6px;"></i> Artinya setiap Rp1 biaya iklan harus menghasilkan Rp' + roasBEP.toFixed(2) + ' omzet agar tidak rugi.<br>';
+
+text += '<i class="fa-solid fa-money-bill-wave" style="color:#22c55e;margin-right:6px;"></i> Biaya iklan maksimal per order: Rp' + Math.round(maxIklanTarget).toLocaleString() + '<br>';
+
+text += '<i class="fa-solid fa-bullseye" style="color:#f59e0b;margin-right:6px;"></i> Target ROAS: ' + roasTarget.toFixed(2) + 'x.<br><br>';
+
+
+// ================= EXTRA INSIGHT =================
 
 let extraRoas = "";
 
 // Target terlalu tinggi
 if (roasTarget >= 8) {
-  extraRoas += "â€¢ Target ROAS terlalu tinggi â†’ iklan akan sulit jalan di Shopee auto ads<br>";
+  extraRoas += '<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;margin-right:6px;"></i> Target ROAS terlalu tinggi → iklan akan sulit jalan di Shopee auto ads<br>';
 } 
 else if (roasTarget >= 5) {
-  extraRoas += "â€¢ Target ROAS cukup tinggi â†’ pastikan harga & produk sangat kompetitif<br>";
+  extraRoas += '<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;margin-right:6px;"></i> Target ROAS cukup tinggi → pastikan harga & produk sangat kompetitif<br>';
 } 
 else {
-  extraRoas += "â€¢ Target ROAS realistis â†’ cocok untuk scale iklan di Shopee<br>";
+  extraRoas += '<i class="fa-solid fa-circle-check" style="color:#22c55e;margin-right:6px;"></i> Target ROAS realistis → cocok untuk scale iklan di Shopee<br>';
 }
 
-// BEP vs realita marketplace
+// BEP vs realita
 if (roasBEP > 4) {
-  extraRoas += "â€¢ ROAS impas tinggi â†’ margin produk kecil atau harga kurang optimal<br>";
+  extraRoas += '<i class="fa-solid fa-scale-unbalanced" style="color:#f59e0b;margin-right:6px;"></i> ROAS impas tinggi → margin produk kecil atau harga kurang optimal<br>';
 }
 
-// Insight utama Shopee
-extraRoas += "â€¢ Di Shopee, sistem iklan cenderung auto â†’ performa tergantung kualitas produk<br>";
-extraRoas += "â€¢ Produk dengan harga kompetitif & banyak ulasan lebih mudah mencapai ROAS tinggi<br>";
-extraRoas += "â€¢ Fokus optimasi pada harga, rating, dan visual produk";
+// Insight Shopee
+extraRoas += '<i class="fa-solid fa-robot" style="margin-right:6px;"></i> Di Shopee, sistem iklan cenderung auto → performa tergantung kualitas produk<br>';
 
-// Render ke UI
+extraRoas += '<i class="fa-solid fa-star" style="margin-right:6px;"></i> Produk dengan harga kompetitif & banyak ulasan lebih mudah mencapai ROAS tinggi<br>';
+
+extraRoas += '<i class="fa-solid fa-chart-line" style="margin-right:6px;"></i> Fokus optimasi pada harga, rating, dan visual produk';
+
+
+// RENDER
 document.getElementById("roasInsightExtraText").innerHTML = extraRoas;
 document.getElementById("roasInsightText").innerHTML = text;
 

@@ -668,13 +668,20 @@ window.location.href = "/";
 return;
 }
 
-// ===== STEP 3 TAMBAHKAN INI =====
 localStorage.setItem("lastCheck", Date.now());
 
 };
+</script>
 
 <script>
 (function(){
+
+// ===== TAMBAHAN INI =====
+if(!localStorage.getItem("email") || !localStorage.getItem("deviceId")){
+console.log("Mode Netlify tanpa login (aman)");
+return;
+}
+// ========================
 
 const email = localStorage.getItem("email");
 const device = localStorage.getItem("deviceId");
@@ -1457,53 +1464,49 @@ if(marginBersih < 10000){
 document.getElementById("insightText").innerHTML = insight;
 
 
-// ================= EXTRA INSIGHT =================
+// ================= EXTRA =================
 
 let extraInsight = "";
 
-// Konversi
 if (konversi < 5) {
-  extraInsight += '<i class="fa-solid fa-chart-line" style="margin-right:6px;"></i> Konversi rendah → perbaiki foto produk, judul, dan perbanyak ulasan positif<br>';
+  extraInsight += '<i class="fa-solid fa-chart-line"></i> Konversi rendah → perbaiki foto produk & judul<br>';
 }
 
-// CPA
 if (cpa > marginBersih) {
-  extraInsight += '<i class="fa-solid fa-money-bill-wave" style="margin-right:6px;"></i> Biaya iklan terlalu mahal → turunkan bid atau optimasi harga produk<br>';
+  extraInsight += '<i class="fa-solid fa-money-bill-wave"></i> Biaya iklan terlalu mahal<br>';
 }
 
-// Margin
 if (marginBersih < 10000) {
-  extraInsight += '<i class="fa-solid fa-scale-unbalanced" style="margin-right:6px;"></i> Margin tipis → pertimbangkan naikkan harga atau tekan biaya<br>';
+  extraInsight += '<i class="fa-solid fa-scale-unbalanced"></i> Margin tipis<br>';
 } else {
-  extraInsight += '<i class="fa-solid fa-rocket" style="margin-right:6px;"></i> Margin cukup aman untuk scale iklan<br>';
+  extraInsight += '<i class="fa-solid fa-rocket"></i> Margin aman untuk scale<br>';
 }
 
-// General
-extraInsight += '<i class="fa-solid fa-image" style="margin-right:6px;"></i> Di Shopee, performa iklan sangat dipengaruhi oleh foto utama & judul produk<br>';
-extraInsight += '<i class="fa-solid fa-eye" style="margin-right:6px;"></i> Gunakan gambar yang kontras, jelas, dan menarik perhatian di feed<br>';
-extraInsight += '<i class="fa-solid fa-key" style="margin-right:6px;"></i> Optimasi judul dengan keyword yang sering dicari';
+extraInsight += '<i class="fa-solid fa-image"></i> Optimasi foto produk<br>';
+extraInsight += '<i class="fa-solid fa-key"></i> Gunakan keyword populer';
 
 // RENDER
 document.getElementById("profitInsightExtraText").innerHTML = extraInsight;
 
+}
 function exportCSV(){
 
-const sku = document.getElementById('sku').value;
-const produk = document.getElementById('namaProduk').value;
+const sku = document.getElementById('sku').value || "-";
+const produk = document.getElementById('namaProduk').value || "-";
 
-const modal = parseInt(document.getElementById('hargaModal').value);
+const modal = parseInt(document.getElementById('hargaModal').value) || 0;
 
 const jual = parseInt(
 document.getElementById('simulasi-price')
 .innerText.replace(/[^0-9]/g,'')
-);
+) || 0;
 
 const profit = parseInt(
 document.getElementById('sum-profit-order')
 .innerText.replace(/[^0-9]/g,'')
-);
+) || 0;
 
-const roas = document.getElementById('res-roas-impas').innerText;
+const roas = document.getElementById('res-roas-impas').innerText || "0x";
 
 const data = [
 ["SKU","PRODUK","MODAL","JUAL","PROFIT","ROAS_BEP"],
@@ -1512,30 +1515,28 @@ const data = [
 
 const ws = XLSX.utils.aoa_to_sheet(data);
 
-/* Lebar Kolom */
+// Lebar kolom
 ws['!cols'] = [
 {wch:15},
 {wch:25},
 {wch:15},
 {wch:15},
 {wch:15},
-{wch:12}
+{wch:10}
 ];
-
-/* Auto Filter */
-ws['!autofilter'] = { ref: "A1:F1" };
 
 const wb = XLSX.utils.book_new();
 XLSX.utils.book_append_sheet(wb, ws, "ANTI BONCOS");
 
+// DOWNLOAD FILE
 XLSX.writeFile(wb, `Anti-Boncos-${sku}.xlsx`);
+
+}
 
 }
 /* ===== ROAS INSIGHT ===== */
 
 function generateRoasInsight(roasBEP, roasTarget, maxIklanTarget){
-
-let text="";
 
 // CEK DATA KOSONG
 if(roasBEP === 0 && roasTarget === 0 && maxIklanTarget === 0){

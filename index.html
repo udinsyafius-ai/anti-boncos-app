@@ -663,7 +663,7 @@ window[callbackName] = function(res){
 if(res.status !== "success"){
 alert("Akses dicabut / email tidak aktif");
 localStorage.clear();
-window.location.href = "/";
+window.location.href = "/login.html";
 return;
 }
 
@@ -678,20 +678,13 @@ localStorage.setItem("lastCheck", Date.now());
 const email = localStorage.getItem("email");
 const device = localStorage.getItem("deviceId");
 
-// ===== STEP 1 TARUH DI SINI =====
-const lastCheck = localStorage.getItem("lastCheck");
-const now = Date.now();
-
-// 3 hari = 259200000
-const isValid = lastCheck && (now - lastCheck < 259200000);
-
-// ===============================
-
+// 🚨 jika belum login → ke login
 if(!email || !device){
-window.location.href = "/";
+window.location.href = "/login.html";
 return;
 }
 
+// ===== CALLBACK (WAJIB DI ATAS) =====
 const callbackName = "authCheck";
 
 window[callbackName] = function(res){
@@ -699,33 +692,42 @@ window[callbackName] = function(res){
 if(res.status !== "success"){
 alert("Akses dicabut / email tidak aktif");
 localStorage.clear();
-window.location.href = "/";
-return; // WAJIB
+window.location.href = "/login.html";
+return;
 }
 
-// simpan waktu validasi
+// simpan waktu validasi (3 hari)
 localStorage.setItem("lastCheck", Date.now());
 
 };
 
-// ===== STEP 2: CEK PERLU VALIDASI ATAU TIDAK =====
-if(isValid){
-console.log("Auto login (skip cek)");
+// ===== CEK MASA AKTIF =====
+const lastCheck = localStorage.getItem("lastCheck");
+const now = Date.now();
 
-// langsung trigger success manual
+// 3 hari
+const isValid = lastCheck && (now - lastCheck < 259200000);
+
+// ===== LOGIC UTAMA =====
+if(isValid){
+
+console.log("Auto login (skip cek)");
 window[callbackName]({status:"success"});
 
 }else{
+
 console.log("Cek ke Google Sheet");
 
 const script = document.createElement("script");
-script.src = "https://script.google.com/macros/s/AKfycbzkyX1XZs9y6s7FD5dGr30xB4plAmZFMIBT8z7z-5iWJg_Im-IptopF2B0psqfmPHWgbw/exec"
+script.src = "https://script.google.com/macros/s/AKfycbzkyX1XZs9y6s7FD5dGr30xB4plAmZFMIBT8z7z-5iWJg_Im-IptopF2B0psqfmPHWgbw/exec?mode=check"
 + "&email=" + encodeURIComponent(email)
 + "&device=" + device
 + "&callback=" + callbackName;
 
 document.body.appendChild(script);
+
 }
+
 })();
 </script>
 
@@ -1722,7 +1724,7 @@ if(splash) splash.style.display="none";
 // ===== LOGOUT =====
 function logout(){
 localStorage.clear();
-window.location.href = "/";
+window.location.href = "/login.html";
 }
 
 </script>

@@ -673,58 +673,57 @@ localStorage.setItem("lastCheck", Date.now());
 };
     </script>
 <script>
-(function(){
+(async function(){
 
 const email = localStorage.getItem("email");
 const device = localStorage.getItem("deviceId");
 
-// 🚨 jika belum login → ke login
+// belum login
 if(!email || !device){
 window.location.href = "/login.html";
 return;
 }
 
-// ===== CALLBACK (WAJIB DI ATAS) =====
-const callbackName = "authCheck";
-
-window[callbackName] = function(res){
-
-if(res.status !== "success"){
-alert("Akses dicabut / email tidak aktif");
-localStorage.clear();
-window.location.href = "/login.html";
-return;
-}
-
-// simpan waktu validasi (3 hari)
-localStorage.setItem("lastCheck", Date.now());
-
-};
-
-// ===== CEK MASA AKTIF =====
+// cek 3 hari
 const lastCheck = localStorage.getItem("lastCheck");
 const now = Date.now();
 
-// 3 hari
-const isValid = lastCheck && (now - lastCheck < 259200000);
-
-// ===== LOGIC UTAMA =====
-if(isValid){
-
+if(lastCheck && (now - lastCheck < 259200000)){
 console.log("Auto login (skip cek)");
-window[callbackName]({status:"success"});
+return;
+}
 
-}else{
+try {
 
-console.log("Cek ke Google Sheet");
+const res = await fetch("https://script.google.com/macros/s/AKfycbzDf1Aocll4P32KrFpFC-9DcmJ4ObC76plf-wCwc6_J--SXg0Ob1nadGcSs0kaYh47DRA/exec");
+const data = await res.json();
 
-const script = document.createElement("script");
-script.src = "https://script.google.com/macros/s/AKfycbzkyX1XZs9y6s7FD5dGr30xB4plAmZFMIBT8z7z-5iWJg_Im-IptopF2B0psqfmPHWgbw/exec?mode=check"
-+ "&email=" + encodeURIComponent(email)
-+ "&device=" + device
-+ "&callback=" + callbackName;
+const user = data.find(u => u.email === email);
 
-document.body.appendChild(script);
+if(!user){
+throw "Email tidak terdaftar";
+}
+
+// cek device
+if(user.device1 && user.device1 !== device && user.device2 !== device){
+throw "Device tidak diizinkan";
+}
+
+// simpan device kalau kosong
+if(!user.device1){
+console.log("Device 1 disimpan");
+}else if(!user.device2){
+console.log("Device 2 disimpan");
+}
+
+// simpan waktu login
+localStorage.setItem("lastCheck", Date.now());
+
+} catch(e){
+
+alert(e);
+localStorage.clear();
+window.location.href = "/login.html";
 
 }
 

@@ -48,7 +48,32 @@ cursor:pointer;
 <button onclick="login()">Masuk</button>
 <p id="status"></p>
 </div>
+<script>
+function login(){
 
+const email = document.getElementById("email").value.trim();
+
+if(!email){
+alert("Masukkan email dulu");
+return;
+}
+
+// generate device unik
+let deviceId = localStorage.getItem("deviceId");
+
+if(!deviceId){
+deviceId = "dev-" + Math.random().toString(36).substr(2,9);
+localStorage.setItem("deviceId", deviceId);
+}
+
+// simpan email
+localStorage.setItem("email", email);
+
+// redirect ke app
+window.location.href = "/index.html";
+
+}
+</script>
 <script>
 
 const scriptURL = "https://script.google.com/macros/s/AKfycbzkyX1XZs9y6s7FD5dGr30xB4plAmZFMIBT8z7z-5iWJg_Im-IptopF2B0psqfmPHWgbw/exec";

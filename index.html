@@ -671,7 +671,7 @@ return;
 localStorage.setItem("lastCheck", Date.now());
 
 };
-
+    </script>
 <script>
 (function(){
 
@@ -719,7 +719,7 @@ window[callbackName]({status:"success"});
 console.log("Cek ke Google Sheet");
 
 const script = document.createElement("script");
-script.src = "https://script.google.com/macros/s/AKfycbwcKhxYlvkLEkG1HOexQOl3rX7p5Ts31__wudsI7amqZ2-s5dp27Z3-zi-UZX965bg6/exec?mode=check"
+script.src = "https://script.google.com/macros/s/AKfycbzkyX1XZs9y6s7FD5dGr30xB4plAmZFMIBT8z7z-5iWJg_Im-IptopF2B0psqfmPHWgbw/exec"
 + "&email=" + encodeURIComponent(email)
 + "&device=" + device
 + "&callback=" + callbackName;
